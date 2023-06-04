@@ -1,28 +1,29 @@
 function navigateToNewSite(url) {
+  var currentLanguage;
+  var urlParams = new URLSearchParams(window.location.search);
+      currentLanguage = urlParams.get('lang');
+
+  if (window.event.target.classList.contains('languageButton')) {
+    currentLanguage = window.event.target.innerText;
+    window.location.href = url + '?lang=' + encodeURIComponent(currentLanguage);
+  } else if(currentLanguage != null){
+    window.location.href = url + '?lang=' + encodeURIComponent(currentLanguage);
+  } else {
     window.location.href = url;
+  }
 }
 
-function saveText(button){
+function saveButtonText(button){
     var buttonText = button.innerText.trim();
 
     var storedText = localStorage.getItem('languages');
-    var storedValues = storedLanguages ? JSON.parse(storedText) : [];
+    var storedValues = storedText ? JSON.parse(storedText) : [];
 
-    storedValues.push(buttonText);
-
-    localStorage.setItem('languages', JSON.stringify(storedValues));
+    if (!storedValues.includes(buttonText)) {
+      storedValues.push(buttonText);
+      localStorage.setItem('languages', JSON.stringify(storedValues));
+    }
 } 
-
-function saveText(input){
-  var inputText = input.value.trim();
-
-  var storedText = localStorage.getItem('topics');
-  var storedValues = storedText ? JSON.parse(storedText) : [];
-
-  storedValues.push(inputText);
-
-  localStorage.setItem('topics', JSON.stringify(storedValues));
-}
 
 function loadLanguageButtons() {
     var languages = localStorage.getItem('languages');
@@ -43,12 +44,29 @@ function loadLanguageButtons() {
     }
   }
 
+  function saveInputText(input){
+    var urlParams = new URLSearchParams(window.location.search);
+    var currentLanguage = urlParams.get('lang');
+
+    var inputText = input.value.trim();
+  
+    var storedText = localStorage.getItem(currentLanguage + 'Topics');
+    var storedValues = storedText ? JSON.parse(storedText) : [];
+  
+    storedValues.push(inputText);
+  
+    localStorage.setItem(currentLanguage + 'Topics', JSON.stringify(storedValues));
+  }
+
 function loadTopics(){
-  console.log("ther are topics");
-  var topics = localStorage.getItem('topics');
+  var urlParams = new URLSearchParams(window.location.search);
+  var currentLanguage = urlParams.get('lang');
+  var topics = localStorage.getItem(currentLanguage + 'Topics');
+
+  console.log(currentLanguage);
+  console.log(topics);
 
   if (topics) {
-    console.log("ther are topics");
     var addButton = document.querySelector('.addButton');
     var savedValues = JSON.parse(topics);
 
