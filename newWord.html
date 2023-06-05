@@ -19,9 +19,16 @@
             </button> 
         </div>
         <div class="main">
-            <a>Add Topic</a>
-            <input type="text" id="topicInput" placeholder="topic name">
-            <button class="button add" onclick="history.back(); saveTopic(document.getElementById('topicInput'))">
+            <a>Add Word</a>
+            <div class="foreign">
+                (Fremdsprache)
+                <input type="text" id="foreignWord">
+            </div>
+            <div class="translation">
+                (Übersetzung)
+                <input type="text" id="translation">
+            </div>
+            <button class="button add" onclick="history.back(); saveWord(document.getElementById('foreignWord'), document.getElementById('translation'))">
                 add
             </button>
             <button class="button discard" onclick="history.back()">
