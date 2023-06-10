@@ -119,7 +119,7 @@ function loadTopics(){
       newButton.className = 'button topicButton';
       newButton.innerText = topic;
       newButton.onclick = function() {
-        navigateToNewSite('wordSite.html');
+        navigateToNewSite('modeSelection.html');
       };
       addButton.parentNode.insertBefore(newButton, addButton);
     });
