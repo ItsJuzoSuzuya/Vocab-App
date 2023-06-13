@@ -1,39 +1,23 @@
-const http = require('http')
-const fs = require('fs')
-const port = 5500
+import Hammer from 'hammerjs';
 
-const server = http.createServer(function(req, res){
-  res.writeHead(200, { 'Content-Type': 'text/html' })
-  fs.readFile('/index.html', function(error, data){
-    if(error){
-      res.writeHead(404)
-      res.write('Error: File Not Found')
-    } else {
-      res.write(data)
-    }
-    res.end()
-  })
-})
+var hammertime = new Hammer(document);
+hammertime.on('swipeleft', function(event) {
+  swipeLeft();
+});
 
-server.listen(port, function(error){
-  if(error){
-    console.log('Something went wrong', error)
-  } else {
-    console.log('Server is listening on port ', port)
-  }
-})
+var urlParams = new URLSearchParams(window.location.search);
+var currentLanguage;
+var currentIndex = 0;
 
 function navigateToNewSite(url) {
-  var currentLanguage;
-  var urlParams = new URLSearchParams(window.location.search);
-      currentLanguage = urlParams.get('lang');
-      currentTopic = urlParams.get('topic');
+  currentLanguage = urlParams.get('lang');
+  currentTopic = urlParams.get('topic');
 
-  if (window.event.target.classList.contains('languageButton')) {
-    currentLanguage = window.event.target.innerText;
+  if (event.target.classList.contains('languageButton')) {
+    currentLanguage = event.target.innerText;
     window.location.href = url + '?lang=' + encodeURIComponent(currentLanguage);
-  }else if(window.event.target.classList.contains('topicButton')){
-    currentTopic = window.event.target.innerText;
+  }else if(event.target.classList.contains('topicButton')){
+    currentTopic = event.target.innerText;
     window.location.href = url + '?lang=' + encodeURIComponent(currentLanguage) + '&topic=' + encodeURIComponent(currentTopic);
   }else if(currentTopic != null){
     window.location.href = url + '?lang=' + encodeURIComponent(currentLanguage) + '&topic=' + encodeURIComponent(currentTopic);
@@ -46,7 +30,7 @@ function navigateToNewSite(url) {
 
 function saveButtonText(button){
     var buttonText = button.innerText.trim();
-
+  
     var storedText = localStorage.getItem('languages');
     var storedValues = storedText ? JSON.parse(storedText) : [];
 
@@ -76,7 +60,6 @@ function loadLanguageButtons() {
   }
 
   function saveTopic(input){
-    var urlParams = new URLSearchParams(window.location.search);
     var currentLanguage = urlParams.get('lang');
 
     var inputText = input.value.trim();
@@ -90,7 +73,6 @@ function loadLanguageButtons() {
   }
 
   function saveWord(input1, input2){
-    var urlParams = new URLSearchParams(window.location.search);
     var currentLanguage = urlParams.get('lang');
     var currentTopic = urlParams.get('topic');
 
@@ -106,7 +88,6 @@ function loadLanguageButtons() {
   }
 
 function loadTopics(){
-  var urlParams = new URLSearchParams(window.location.search);
   var currentLanguage = urlParams.get('lang');
   var topics = localStorage.getItem(currentLanguage + 'Topics');
 
@@ -119,7 +100,7 @@ function loadTopics(){
       newButton.className = 'button topicButton';
       newButton.innerText = topic;
       newButton.onclick = function() {
-        navigateToNewSite('wordSite.html');
+        navigateToNewSite('modeSelection.html');
       };
       addButton.parentNode.insertBefore(newButton, addButton);
     });
@@ -127,13 +108,10 @@ function loadTopics(){
 }
 
   function loadWords(){
-    var urlParams = new URLSearchParams(window.location.search);
     var currentLanguage = urlParams.get('lang');
     var currentTopic = urlParams.get('topic');
 
     var topics = localStorage.getItem(currentLanguage + currentTopic + 'Words');
-
-    //console.log(topics);
   
     if (topics) {
       var addButton = document.querySelector('.addButton');
@@ -163,3 +141,59 @@ function loadTopics(){
       });
     }
 }
+
+
+function loadFirstBigWord(){
+    var currentLanguage = urlParams.get('lang');
+    var currentTopic = urlParams.get('topic');
+
+    var topics = localStorage.getItem(currentLanguage + currentTopic + 'Words');
+
+    if (topics) {
+      var savedValues = JSON.parse(topics);
+  
+      var firstEntry = Object.entries(savedValues)[0];
+      var key = firstEntry[0];
+      var value = firstEntry[1];
+
+      var foreignWord = document.createElement('input');
+      foreignWord.className = 'bigWord';
+      foreignWord.value = key;
+      foreignWord.readOnly = true;
+
+      var translation = document.createElement('input');
+      translation.className = 'bigWord';
+      translation.value = value;
+      translation.readOnly = true;
+
+      var mainDiv = document.querySelector('.main');
+      mainDiv.appendChild(foreignWord);
+      mainDiv.appendChild(translation);
+    }      
+}
+
+function swipeLeft() {
+    currentIndex++;
+  if (currentIndex >= words.length) {
+    currentIndex = 0;
+  }
+
+  var mainDiv = document.querySelector('main');
+  mainDiv.style.transform = `translateY(-${currentIndex * 60}px)`;
+  loadNextBigCard()
+}
+
+function loadNextBigCard(){
+  
+  Object.entries(savedValues)[currentIndex];
+
+  var foreignInput = document.querySelector('.bigWord:first-child');
+  var translationInput = document.querySelector('.bigWord:last-child');
+
+  foreignInput.value = words[currentIndex].foreign;
+  translationInput.value = words[currentIndex].translation;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('swipeleft', swipeLeft);
+});
