@@ -1,12 +1,11 @@
-import Hammer from 'hammerjs';
-
-var hammertime = new Hammer(document);
-hammertime.on('swipeleft', function(event) {
-  swipeLeft();
-});
-
 var urlParams = new URLSearchParams(window.location.search);
+
+var words = localStorage.getItem(currentLanguage + currentTopic + 'Words');
+var topics = localStorage.getItem(currentLanguage + 'Topics');
+var languages = localStorage.getItem('languages');
+
 var currentLanguage;
+var currentTopic;
 var currentIndex = 0;
 
 function navigateToNewSite(url) {
@@ -31,8 +30,7 @@ function navigateToNewSite(url) {
 function saveButtonText(button){
     var buttonText = button.innerText.trim();
   
-    var storedText = localStorage.getItem('languages');
-    var storedValues = storedText ? JSON.parse(storedText) : [];
+    var storedValues = languages ? JSON.parse(languages) : [];
 
     if (!storedValues.includes(buttonText)) {
       storedValues.push(buttonText);
@@ -40,9 +38,7 @@ function saveButtonText(button){
     }
 } 
 
-function loadLanguageButtons() {
-    var languages = localStorage.getItem('languages');
-  
+function loadLanguageButtons() {  
     if (languages) {
       var addButton = document.querySelector('.addButton');
       var savedValues = JSON.parse(languages);
@@ -60,12 +56,9 @@ function loadLanguageButtons() {
   }
 
   function saveTopic(input){
-    var currentLanguage = urlParams.get('lang');
-
     var inputText = input.value.trim();
   
-    var storedText = localStorage.getItem(currentLanguage + 'Topics');
-    var storedValues = storedText ? JSON.parse(storedText) : [];
+    var storedValues = topics ? JSON.parse(topic) : [];
   
     storedValues.push(inputText);
   
@@ -73,14 +66,10 @@ function loadLanguageButtons() {
   }
 
   function saveWord(input1, input2){
-    var currentLanguage = urlParams.get('lang');
-    var currentTopic = urlParams.get('topic');
-
     var foreignWord = input1.value.trim();
     var translation = input2.value.trim();
   
-    var storedText = localStorage.getItem(currentLanguage +  currentTopic + 'Words');
-    var storedValues = storedText ? JSON.parse(storedText) : {};
+    var storedValues = words ? JSON.parse(words) : {};
 
     storedValues[foreignWord] = translation;
   
@@ -88,9 +77,6 @@ function loadLanguageButtons() {
   }
 
 function loadTopics(){
-  var currentLanguage = urlParams.get('lang');
-  var topics = localStorage.getItem(currentLanguage + 'Topics');
-
   if (topics) {
     var addButton = document.querySelector('.addButton');
     var savedValues = JSON.parse(topics);
@@ -108,14 +94,9 @@ function loadTopics(){
 }
 
   function loadWords(){
-    var currentLanguage = urlParams.get('lang');
-    var currentTopic = urlParams.get('topic');
-
-    var topics = localStorage.getItem(currentLanguage + currentTopic + 'Words');
-  
-    if (topics) {
+    if (words) {
       var addButton = document.querySelector('.addButton');
-      var savedValues = JSON.parse(topics);
+      var savedValues = JSON.parse(words);
   
       Object.entries(savedValues).forEach(function([key, value]) {
         console.log(key + value);
@@ -142,58 +123,99 @@ function loadTopics(){
     }
 }
 
-
-function loadFirstBigWord(){
-    var currentLanguage = urlParams.get('lang');
-    var currentTopic = urlParams.get('topic');
-
-    var topics = localStorage.getItem(currentLanguage + currentTopic + 'Words');
-
-    if (topics) {
-      var savedValues = JSON.parse(topics);
-  
-      var firstEntry = Object.entries(savedValues)[0];
-      var key = firstEntry[0];
-      var value = firstEntry[1];
-
-      var foreignWord = document.createElement('input');
-      foreignWord.className = 'bigWord';
-      foreignWord.value = key;
-      foreignWord.readOnly = true;
-
-      var translation = document.createElement('input');
-      translation.className = 'bigWord';
-      translation.value = value;
-      translation.readOnly = true;
-
-      var mainDiv = document.querySelector('.main');
-      mainDiv.appendChild(foreignWord);
-      mainDiv.appendChild(translation);
-    }      
-}
-
 function swipeLeft() {
-    currentIndex++;
-  if (currentIndex >= words.length) {
+  var savedValues = JSON.parse(words);
+
+  currentIndex++;
+  if (currentIndex >= Object.entries(savedValues).length) {
     currentIndex = 0;
   }
-
-  var mainDiv = document.querySelector('main');
-  mainDiv.style.transform = `translateY(-${currentIndex * 60}px)`;
-  loadNextBigCard()
+  loadNextBigCard(false);
 }
 
-function loadNextBigCard(){
-  
-  Object.entries(savedValues)[currentIndex];
+function loadNextBigCard(first) {
+  var savedValues = JSON.parse(words);
+  var currentEntry = Object.entries(savedValues)[currentIndex];
 
-  var foreignInput = document.querySelector('.bigWord:first-child');
-  var translationInput = document.querySelector('.bigWord:last-child');
+  var newForeignInput = document.createElement('input');
+  newForeignInput.className = 'bigWord';
+  var newTranslationInput = document.createElement('input');
+  newTranslationInput.className = 'bigWord';
 
-  foreignInput.value = words[currentIndex].foreign;
-  translationInput.value = words[currentIndex].translation;
+  newForeignInput.value = currentEntry[0];
+  newTranslationInput.value = currentEntry[1];
+
+  var mainDiv = document.querySelector('.main');
+  var existingInputs = document.querySelectorAll('.bigWord');
+
+  if(existingInputs.length != 0){
+    
+    // Apply slide-out animation to existing inputs
+    existingInputs.forEach(function (input) {
+      input.style.transform = 'translateX(-100%)';
+      input.addEventListener('transitionend', removeInput);
+    });
+
+    function removeInput(event) {
+      event.target.remove();
+    }
+
+    // Set initial position to slide from
+    newForeignInput.style.transform = 'translateX(100%)';
+    newTranslationInput.style.transform = 'translateX(100%)';
+
+    // Append the new inputs to the mainDiv
+    mainDiv.appendChild(newForeignInput);
+    mainDiv.appendChild(newTranslationInput);
+
+    // Trigger reflow to apply initial position styles
+    newForeignInput.offsetHeight;
+    newTranslationInput.offsetHeight;
+
+    // Apply transition styles
+    newForeignInput.style.transition = 'transform 0.3s ease';
+    newTranslationInput.style.transition = 'transform 0.3s ease';
+
+    // Animate the slide-in effect
+    newForeignInput.style.transform = 'translateX(0)';
+    newTranslationInput.style.transform = 'translateX(0)';
+
+
+
+  } else if (first){
+      newForeignInput.style.transition = 'transform 0.3s ease';
+      newTranslationInput.style.transition = 'transform 0.3s ease';
+
+      mainDiv.appendChild(newForeignInput);
+      mainDiv.appendChild(newTranslationInput);
+  }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  document.addEventListener('swipeleft', swipeLeft);
+
+document.addEventListener('touchstart', function (event) {
+  var startX = event.touches[0].clientX;
+  document.addEventListener('touchend', handleTouchEnd);
+
+  function handleTouchEnd(event) {
+    var endX = event.changedTouches[0].clientX;
+    var diffX = endX - startX;
+    if (diffX < 0) {
+      swipeLeft();
+    }
+    document.removeEventListener('touchend', handleTouchEnd);
+  }
+});
+
+document.addEventListener('mousedown', function (event) {
+  var startX = event.clientX;
+  document.addEventListener('mouseup', handleMouseUp);
+
+  function handleMouseUp(event) {
+    var endX = event.clientX;
+    var diffX = endX - startX;
+    if (diffX < 0) {
+      swipeLeft();
+    }
+    document.removeEventListener('mouseup', handleMouseUp);
+  }
 });

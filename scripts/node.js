@@ -5,10 +5,10 @@ const port = 5500
 
 const server = http.createServer(function(req, res){
   res.writeHead(200, { 'Content-Type': 'text/html' })
-  fs.readFile('./index.html', function(error, data){
+  fs.readFile('/htmls/index.html', function(error, data){
     if(error){
       res.writeHead(404)
-      res.write('Error: File Not Found')
+      res.write(error)
     } else {
       res.write(data)
     }
