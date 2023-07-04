@@ -130,10 +130,20 @@ function swipeLeft() {
   if (currentIndex >= Object.entries(savedValues).length) {
     currentIndex = 0;
   }
-  loadNextBigCard(false);
+  loadNextBigCard(false, 'left');
 }
 
-function loadNextBigCard(first) {
+function swipeRight() {
+  var savedValues = JSON.parse(words);
+
+  currentIndex--;
+  if (currentIndex < 0) {
+    currentIndex = Object.entries(savedValues).length - 1;
+  }
+  loadNextBigCard(false, 'right');
+}
+
+function loadNextBigCard(first, direction) {
   var savedValues = JSON.parse(words);
   var currentEntry = Object.entries(savedValues)[currentIndex];
 
@@ -145,14 +155,13 @@ function loadNextBigCard(first) {
   newForeignInput.value = currentEntry[0];
   newTranslationInput.value = currentEntry[1];
 
-  var mainDiv = document.querySelector('.main');
+  var foreignDiv = document.querySelector('.foreign');
+  var translationDiv = document.querySelector('.translation');
   var existingInputs = document.querySelectorAll('.bigWord');
 
-  if(existingInputs.length != 0){
-    
-    // Apply slide-out animation to existing inputs
+  if (existingInputs.length != 0) {
     existingInputs.forEach(function (input) {
-      input.style.transform = 'translateX(-100%)';
+      input.style.opacity = '0';
       input.addEventListener('transitionend', removeInput);
     });
 
@@ -160,34 +169,34 @@ function loadNextBigCard(first) {
       event.target.remove();
     }
 
-    // Set initial position to slide from
-    newForeignInput.style.transform = 'translateX(100%)';
-    newTranslationInput.style.transform = 'translateX(100%)';
+    if (direction == 'left') {
+      newForeignInput.style.transform = 'translateX(100%)';
+      newTranslationInput.style.transform = 'translateX(100%)';
+    } else {
+      newForeignInput.style.transform = 'translateX(-100%)';
+      newTranslationInput.style.transform = 'translateX(-100%)';
+    }
 
-    // Append the new inputs to the mainDiv
-    mainDiv.appendChild(newForeignInput);
-    mainDiv.appendChild(newTranslationInput);
+    foreignDiv.appendChild(newForeignInput);
+    translationDiv.appendChild(newTranslationInput);
 
-    // Trigger reflow to apply initial position styles
     newForeignInput.offsetHeight;
     newTranslationInput.offsetHeight;
 
-    // Apply transition styles
-    newForeignInput.style.transition = 'transform 0.3s ease';
-    newTranslationInput.style.transition = 'transform 0.3s ease';
+    newForeignInput.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+    newTranslationInput.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
 
-    // Animate the slide-in effect
     newForeignInput.style.transform = 'translateX(0)';
     newTranslationInput.style.transform = 'translateX(0)';
+  } else if (first) {
+    newForeignInput.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+    newTranslationInput.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
 
+    foreignDiv.appendChild(newForeignInput);
+    translationDiv.appendChild(newTranslationInput);
 
-
-  } else if (first){
-      newForeignInput.style.transition = 'transform 0.3s ease';
-      newTranslationInput.style.transition = 'transform 0.3s ease';
-
-      mainDiv.appendChild(newForeignInput);
-      mainDiv.appendChild(newTranslationInput);
+    newForeignInput.style.transform = 'translateX(0)';
+    newTranslationInput.style.transform = 'translateX(0)';
   }
 }
 
@@ -201,7 +210,7 @@ document.addEventListener('touchstart', function (event) {
     var diffX = endX - startX;
     if (diffX < 0) {
       swipeLeft();
-    }
+    } else swipeRight();
     document.removeEventListener('touchend', handleTouchEnd);
   }
 });
@@ -215,7 +224,7 @@ document.addEventListener('mousedown', function (event) {
     var diffX = endX - startX;
     if (diffX < 0) {
       swipeLeft();
-    }
+    } else swipeRight();
     document.removeEventListener('mouseup', handleMouseUp);
   }
 });

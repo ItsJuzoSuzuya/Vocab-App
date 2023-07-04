@@ -107,3 +107,11 @@
     font-size: 16px;
     line-height: 28px;
 }
+
+.bigCards{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    top: 101px;
+}
