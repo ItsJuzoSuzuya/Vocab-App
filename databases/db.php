@@ -1,14 +1,13 @@
 <?php
 
 include "../define.php";
+$db = new mysqli( HOST, USER, PASSWORT, DB_NAME,PORT);
     if (isset($_POST["language"])) {
-        phpinfo();
-
         $selectedLanguage = $_POST["language"];
+        $sql = "INSERT INTO languages(language) VALUES ('$selectedLanguage')";
 
-        $db_conn = pg_connect("host=localhost port=5432 dbname=postgres user=postgres password=" . PASSWORT);
-        pg_insert($db_conn, "languages", [1,"German"], 0);
-          
+        $db->query($sql);
+
         // You can perform any necessary PHP logic here based on the selected language
         // For example, save the language to a database or perform other operations
             
@@ -17,6 +16,5 @@ include "../define.php";
     } else {
         // Respond with a bad request status (HTTP 400) if language parameter is missing
         http_response_code(400);
-        echo "Bad request. Language parameter missing.";
+        echo "Bad request. Language parameter";
     }
-?>
