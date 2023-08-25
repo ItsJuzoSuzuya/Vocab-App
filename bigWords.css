@@ -1,0 +1,7 @@
+.bigCards{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    top: 101px;
+}

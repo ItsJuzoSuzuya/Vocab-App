@@ -1,0 +1,27 @@
+.pair {
+    display: flex;
+    justify-content: start;
+    flex-direction: column;
+
+    gap: 24px;
+
+    position: absolute;
+    top: 101px;
+    left: 12px;
+    right: 12px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .nativeColumn,
+  .foreignColumn {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .invisible {
+    visibility: hidden;
+  }

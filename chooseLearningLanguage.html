@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>addLanguageSite</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="index.css">
+        <script src="scripts/script.js"></script>
+        <script src="scripts/ajax.js"></script>
+    </head>
+    <body>
+        <div class="top-bar">
+            <button class="button backButton" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <button class="button profileButton" onclick="navigateTo('profilePage.html')">
+                <img src="Icons/Profil_Icon.png"></i>
+            </button> 
+        </div>
+        <div class="main">
+            <a>Select Your Native Language</a>
+            <button class="button addButton" onclick="saveLanguageToDB('German'); saveNewLanguage(this)">
+                German 
+            </button>
+            <button class="button addButton" onclick="saveLanguageToDB('English'); saveNewLanguage(this)">
+                English 
+            </button>
+            <button class="button addButton" onclick="saveLanguageToDB('French'); saveNewLanguage(this)">
+                French 
+            </button>
+            <button class="button addButton" onclick="saveLanguageToDB('Spanish'); saveNewLanguage(this)">
+                Spanish 
+            </button>
+            <button class="button addButton" onclick="saveLanguageToDB('Chinese'); saveNewLanguage(this)">
+                Chinese 
+            </button>
+        </div>
+        <div class="navbar">
+            <a href="index.html" class="active"><i class="fas fa-home"></i></a>
+            <a href="#add"><i class="fas fa-plus"></i></a>
+            <a href="#settings"><i class="fas fa-cog"></i></a>
+        </div>    
+    </body>
+</html>

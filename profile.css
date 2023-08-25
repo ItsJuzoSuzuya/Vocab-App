@@ -1,0 +1,23 @@
+.LogInButton{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    background: linear-gradient(93.01deg, rgba(255, 255, 255, 0.9) 15.98%, rgba(255, 255, 255, 0.495) 85.36%);
+    
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    border-style: none;
+
+    gap: 8px;
+    
+    height: 52px;
+}
+
+.top-bar a{
+    position: absolute;
+    align-items: center;
+    font-weight: bold;
+
+    right: 100%;
+}
