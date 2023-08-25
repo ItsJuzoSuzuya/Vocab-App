@@ -15,3 +15,4 @@ function saveLanguageToDB(language) {
     var data = "language=" + encodeURIComponent(language);
     xhr.send(data);
 }
+

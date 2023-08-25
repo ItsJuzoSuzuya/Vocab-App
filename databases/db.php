@@ -4,7 +4,8 @@ include "../define.php";
 $db = new mysqli( HOST, USER, PASSWORT, DB_NAME,PORT);
     if (isset($_POST["language"])) {
         $selectedLanguage = $_POST["language"];
-        $sql = "INSERT INTO languages(language) VALUES ('$selectedLanguage')";
+        $sql = "INSERT INTO languages(language) 
+            SELECT '$selectedLanguage' WHERE NOT EXISTS(SELECT * FROM languages WHERE language='$selectedLanguage')";
 
         $db->query($sql);
 
